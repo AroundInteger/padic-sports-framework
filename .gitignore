@@ -11,6 +11,23 @@ figures/
 # User datasets (keep examples)
 data/raw/*
 !data/raw/.gitkeep
+data/rugby/*.csv
+!data/rugby/README.md
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Pipeline outputs
+pipeline/results/
+*.egg-info/
+
+# Validation (large; sync selectively)
+validation_results_phase*/*
+!validation_results_phase*/.gitkeep
 
 # OS
 .DS_Store
