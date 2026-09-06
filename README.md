@@ -57,6 +57,8 @@ Canonical distance is **D3** only. D2 is in `legacy_d2.py` for audit of the 0.70
 
 See [`docs/MIGRATION.md`](docs/MIGRATION.md) for the full checklist.
 
+**Mac one-time sync:** PR #1 is merged. Run `bash scripts/mac_one_time_setup.sh` on your Mac — see [`docs/MAC_SETUP.md`](docs/MAC_SETUP.md).
+
 ## Former `padic-sports-framework` repository
 
 The standalone repo [`AroundInteger/padic-sports-framework`](https://github.com/AroundInteger/padic-sports-framework) is superseded by this monorepo. Recommended: rename this repository to `p-adic-systems` in GitHub settings and archive the old repo with a redirect.

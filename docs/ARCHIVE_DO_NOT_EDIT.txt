@@ -1,0 +1,11 @@
+Archive — do not edit in parallel with the canonical repository.
+
+Canonical repo (local):  ~/Documents/GitHub/p-adic-systems
+Canonical repo (GitHub): https://github.com/AroundInteger/p-adic-systems
+                         (or padic-sports-framework until renamed)
+
+This folder (/Users/rowanbrown/Documents/Claude/Projects/p-adic applications in sport/)
+is an archive of the April–June 2026 off-shoot. Content was copied into the canonical
+repository on 25 August 2026. Further edits here will drift from FOUNDATION.md (ruling R9).
+
+Copy this file into the Claude folder, or run:  bash scripts/mac_one_time_setup.sh
