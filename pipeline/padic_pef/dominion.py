@@ -156,13 +156,22 @@ def construction_check(
     p: int = DEFAULT_P,
     linkage_method: str = DEFAULT_LINKAGE,
     k: int = N_RANKS,
+    ground_truth_ranks: np.ndarray | None = None,
 ) -> ConstructionCheck:
-    """Cluster at k = n_ranks and score recovery of planted rank."""
+    """Cluster at k = n_ranks and score recovery of planted rank.
+
+    ``ground_truth_ranks`` should be the *original* planted rank column when
+    testing erosion (E4/E5). If omitted, rank is taken from ``digits[:, 0]``.
+    """
     planted = plant() if digits is None else np.asarray(digits, dtype=int)
     ids = entity_ids()
     enc = as_encoding(planted, ids)
     result = cluster_padic(enc, p=p, k=k, linkage_method=linkage_method)
-    ranks = planted_ranks(planted)
+    ranks = (
+        np.asarray(ground_truth_ranks, dtype=int)
+        if ground_truth_ranks is not None
+        else planted_ranks(planted)
+    )
     n_lab = int(len(np.unique(result.labels)))
     ari = (
         float(adjusted_rand_score(ranks, result.labels))

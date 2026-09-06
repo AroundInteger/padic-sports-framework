@@ -1,0 +1,99 @@
+{
+  "q1_summary": {
+    "all_pass": true,
+    "failures": 0,
+    "by_stage_linkage": [
+      {
+        "stage": "E1",
+        "linkage": "average",
+        "all": true,
+        "min": true
+      },
+      {
+        "stage": "E1",
+        "linkage": "complete",
+        "all": true,
+        "min": true
+      },
+      {
+        "stage": "E1",
+        "linkage": "single",
+        "all": true,
+        "min": true
+      },
+      {
+        "stage": "E2",
+        "linkage": "average",
+        "all": true,
+        "min": true
+      },
+      {
+        "stage": "E2",
+        "linkage": "complete",
+        "all": true,
+        "min": true
+      },
+      {
+        "stage": "E2",
+        "linkage": "single",
+        "all": true,
+        "min": true
+      },
+      {
+        "stage": "E3",
+        "linkage": "average",
+        "all": true,
+        "min": true
+      },
+      {
+        "stage": "E3",
+        "linkage": "complete",
+        "all": true,
+        "min": true
+      },
+      {
+        "stage": "E3",
+        "linkage": "single",
+        "all": true,
+        "min": true
+      }
+    ],
+    "min_rank_ari_overall": 1.0
+  },
+  "q3_coarsest_first": {
+    "first_failure_pi_by_k": {
+      "2": 0.05,
+      "4": 0.05,
+      "8": 0.05
+    },
+    "coarsest_first": true
+  },
+  "q8": {
+    "by_k": [
+      {
+        "k": 2,
+        "partitions_match_all_primes": true,
+        "silhouette_min": 0.0,
+        "silhouette_max": 0.0,
+        "silhouette_spread": 0.0
+      },
+      {
+        "k": 4,
+        "partitions_match_all_primes": true,
+        "silhouette_min": 0.5833333333333333,
+        "silhouette_max": 0.9467455621301775,
+        "silhouette_spread": 0.3634122287968442
+      },
+      {
+        "k": 8,
+        "partitions_match_all_primes": true,
+        "silhouette_min": 0.5,
+        "silhouette_max": 0.923076923076923,
+        "silhouette_spread": 0.423076923076923
+      }
+    ],
+    "partitions_invariant": true,
+    "silhouette_varies": true
+  },
+  "q5_verdict": null
+}

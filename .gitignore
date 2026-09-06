@@ -22,7 +22,13 @@ __pycache__/
 venv/
 
 # Pipeline outputs
-pipeline/results/
+pipeline/results/*
+!pipeline/results/.gitkeep
+!pipeline/results/week25_a1_report.md
+!pipeline/results/week25_a1_summary.json
+!pipeline/results/erosion_curve.md
+!pipeline/results/erosion_curve_points.csv
+!pipeline/results/week25_q*.csv
 *.egg-info/
 
 # Validation (large; sync selectively)
