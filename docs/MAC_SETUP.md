@@ -12,21 +12,29 @@
 
 ## One command on your Mac
 
-After opening Terminal:
+Your local `p-adic-systems` folder may **not be a git repo yet** — that is normal. Do **not** run `git pull` first.
+
+### If you have local files but no git (most common)
+
+Download and run the bootstrap script (works without cloning first):
 
 ```bash
-cd ~/Documents/GitHub/p-adic-systems   # or clone first — see below
-git pull origin main                   # get merged monorepo structure
-bash scripts/mac_one_time_setup.sh
+curl -fsSL https://raw.githubusercontent.com/AroundInteger/padic-sports-framework/main/scripts/mac_one_time_setup.sh -o /tmp/mac_one_time_setup.sh
+bash /tmp/mac_one_time_setup.sh
 ```
 
-If you do not yet have the GitHub repo locally:
+This will:
+
+1. Move your existing `~/Documents/GitHub/p-adic-systems` to a dated backup
+2. Clone GitHub into `~/Documents/GitHub/p-adic-systems`
+3. Merge your local pipeline, docs, CSV and MATLAB back in
+4. Commit and push
+
+### If you already have a git clone
 
 ```bash
-git clone https://github.com/AroundInteger/padic-sports-framework.git ~/Documents/GitHub/p-adic-systems-sync
-CANON=~/Documents/GitHub/p-adic-systems \
-WORK=~/Documents/GitHub/p-adic-systems-sync \
-bash ~/Documents/GitHub/p-adic-systems-sync/scripts/mac_one_time_setup.sh
+cd ~/Documents/GitHub/p-adic-systems
+bash scripts/mac_one_time_setup.sh
 ```
 
 ### Environment variables (optional)
