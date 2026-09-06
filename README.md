@@ -37,10 +37,18 @@ For the URC audit reproduction (D2, 1,128 rows, 16 teams), see `FOUNDATION.md` Â
 ## Python pipeline
 
 ```bash
-cd pipeline/padic_pef
-# After sync from local worktree:
-python -m pytest tests/
+pip install -r pipeline/requirements.txt
+python -m pytest pipeline/padic_pef/tests/ -q
 ```
+
+**A1 week 2.5 (Dominion Q1, Q3, Q5, Q8):**
+
+```bash
+python scripts/run_week25_a1.py
+# â†’ pipeline/results/week25_a1_report.md
+```
+
+Q5 requires `data/rugby/rugby_analysis_ready.csv` (present locally after Mac sync).
 
 Canonical distance is **D3** only. D2 is in `legacy_d2.py` for audit of the 0.7083 claim (ruling R12: not recovered; Python D2 = 0.5833).
 
