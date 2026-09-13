@@ -95,5 +95,97 @@
     "partitions_invariant": true,
     "silhouette_varies": true
   },
-  "q5_verdict": null
+  "q5_verdict": {
+    "performance_at_rank_near_e0_rate": 0.6666666666666666,
+    "other_perms_near_e0_rate": 0.0,
+    "only_perf_near_e0": false,
+    "declared_perm_near_e0": true
+  },
+  "q6": [
+    {
+      "perm": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "linkage": "single",
+      "drop_endowment": false,
+      "metric": "curve",
+      "silhouette": 0.6375,
+      "rank_first_share": 0.6916666666666667,
+      "nearest_curve_stage": "E4",
+      "nearest_curve_pi": 0.6,
+      "curve_distance": 0.022244410779812568,
+      "score": 0.6375
+    },
+    {
+      "perm": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "linkage": "complete",
+      "drop_endowment": false,
+      "metric": "curve",
+      "silhouette": 0.6375,
+      "rank_first_share": 0.6916666666666667,
+      "nearest_curve_stage": "E4",
+      "nearest_curve_pi": 0.6,
+      "curve_distance": 0.022244410779812568,
+      "score": 0.6375
+    },
+    {
+      "perm": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "linkage": "average",
+      "drop_endowment": false,
+      "metric": "curve",
+      "silhouette": 0.6375,
+      "rank_first_share": 0.6916666666666667,
+      "nearest_curve_stage": "E4",
+      "nearest_curve_pi": 0.6,
+      "curve_distance": 0.022244410779812568,
+      "score": 0.6375
+    },
+    {
+      "perm": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "linkage": "complete",
+      "drop_endowment": true,
+      "metric": "curve",
+      "silhouette": 0.6375,
+      "rank_first_share": 0.6916666666666667,
+      "nearest_curve_stage": "E4",
+      "nearest_curve_pi": 0.6,
+      "curve_distance": 0.022244410779812568,
+      "score": 0.6375
+    },
+    {
+      "perm": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "linkage": "complete",
+      "drop_endowment": false,
+      "metric": "performance_tier_ari",
+      "silhouette": 0.6375,
+      "rank_first_share": 0.6916666666666667,
+      "nearest_curve_stage": "performance_tier",
+      "nearest_curve_pi": NaN,
+      "curve_distance": NaN,
+      "score": 1.0
+    }
+  ]
 }

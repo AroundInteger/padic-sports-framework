@@ -29,6 +29,7 @@ pipeline/results/*
 !pipeline/results/erosion_curve.md
 !pipeline/results/erosion_curve_points.csv
 !pipeline/results/week25_q*.csv
+!pipeline/results/week25_q6.csv
 *.egg-info/
 
 # Validation (large; sync selectively)

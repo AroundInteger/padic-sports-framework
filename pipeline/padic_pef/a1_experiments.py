@@ -1,4 +1,4 @@
-"""A1 week 2.5 experiments: Dominion Q1, Q3, Q5, Q8 (FOUNDATION.md §5.1, §8).
+"""A1 week 2.5 experiments: Dominion Q1–Q3, Q5–Q8 (FOUNDATION.md §5.1, §8).
 
 Run from repository root:
 
@@ -23,6 +23,7 @@ from sklearn.metrics import adjusted_rand_score
 from . import cluster
 from .adapters import rugby as rugby_adapter
 from .dominion import (
+    LEVELS,
     NESTED_CUTS,
     as_encoding,
     construction_check,
@@ -33,7 +34,7 @@ from .dominion import (
     planted_ranks,
 )
 from .erode import STAGES, apply
-from .ingest import DEFAULT_RUGBY_CSV
+from .ingest import resolve_rugby_data_path
 from .validate import baseline_clusterings, silhouette_comparison
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -342,7 +343,7 @@ def _nearest_curve_point(
 
 
 def run_q5(
-    csv_path: Path | str | None = None,
+    data_path: Path | str | None = None,
     *,
     curve: pd.DataFrame | None = None,
     p: int = DEFAULT_P,
@@ -350,11 +351,7 @@ def run_q5(
     near_e0_threshold: float = 0.15,
 ) -> pd.DataFrame:
     """Q5: 24 URC digit permutations vs erosion curve."""
-    csv_path = Path(csv_path or DEFAULT_RUGBY_CSV)
-    if not csv_path.is_file():
-        raise FileNotFoundError(
-            f"Rugby CSV not found at {csv_path}. Q5 requires data/rugby/rugby_analysis_ready.csv"
-        )
+    data_path = resolve_rugby_data_path(data_path)
 
     if curve is None:
         curve = build_erosion_curve()
@@ -364,7 +361,7 @@ def run_q5(
 
     rows: list[Q5Row] = []
     for perm in rugby_adapter.slot_permutations():
-        enc = rugby_adapter.to_encoding(csv_path, perm=perm)
+        enc = rugby_adapter.to_encoding(data_path, perm=perm)
         digits = enc.digits
         chk = construction_check(digits, p=p, linkage_method=linkage, k=4)
         share = first_disagreement_share(digits)
@@ -462,18 +459,93 @@ def run_q8(
     return pd.DataFrame(rows), {"by_k": partition_rows, **summary}
 
 
+def _adapter_placement(
+    data_path: Path | str,
+    perm: tuple[int, ...],
+    curve: pd.DataFrame,
+    *,
+    p: int = DEFAULT_P,
+    linkage: str = DEFAULT_LINKAGE,
+    drop_endowment: bool = False,
+    metric: str = "curve",
+) -> dict[str, Any]:
+    """Placement of one adapter reading on the erosion curve."""
+    teams, source = rugby_adapter.source_digit_matrix(data_path)
+    digits = rugby_adapter.map_digits(source, perm)
+    if drop_endowment:
+        digits = digits[:, :3]
+    enc = as_encoding(digits, teams)
+    enc.metric_order = list(LEVELS[: digits.shape[1]])
+
+    result = cluster.cluster_padic(enc, p=p, k=4, linkage_method=linkage)
+    share = first_disagreement_share(digits)
+
+    if metric == "performance_tier_ari":
+        perf_digit = source[:, 0]
+        score = float(adjusted_rand_score(perf_digit, result.labels))
+        stage, pi, dist = "performance_tier", float("nan"), float("nan")
+    else:
+        score = float(result.silhouette)
+        stage, pi, dist = _nearest_curve_point(curve, result.silhouette, float(share[0]))
+
+    return {
+        "perm": perm,
+        "linkage": linkage,
+        "drop_endowment": drop_endowment,
+        "metric": metric,
+        "silhouette": float(result.silhouette),
+        "rank_first_share": float(share[0]),
+        "nearest_curve_stage": stage,
+        "nearest_curve_pi": pi,
+        "curve_distance": dist,
+        "score": score,
+    }
+
+
+def run_q6(
+    data_path: Path | str | None = None,
+    *,
+    curve: pd.DataFrame | None = None,
+    perm: tuple[int, ...] = rugby_adapter.DECLARED_PERM,
+) -> pd.DataFrame:
+    """Q6: placement stability — linkage, drop constant endowment, tier ARI."""
+    data_path = resolve_rugby_data_path(data_path)
+    if curve is None:
+        curve = build_erosion_curve()
+
+    rows = []
+    for linkage in cluster.SUPPORTED_LINKAGES:
+        rows.append(_adapter_placement(data_path, perm, curve, linkage=linkage))
+    rows.append(
+        _adapter_placement(
+            data_path, perm, curve, linkage=DEFAULT_LINKAGE, drop_endowment=True
+        )
+    )
+    rows.append(
+        _adapter_placement(
+            data_path,
+            perm,
+            curve,
+            linkage=DEFAULT_LINKAGE,
+            metric="performance_tier_ari",
+        )
+    )
+    return pd.DataFrame(rows)
+
+
 def run_q7_adapter_parity(
-    csv_path: Path | str | None = None,
+    data_path: Path | str | None = None,
     perm: tuple[int, ...] = rugby_adapter.DECLARED_PERM,
 ) -> pd.DataFrame | None:
     """Q7 re-check on declared 4-d reading (partial, bundled with week 2.5)."""
-    csv_path = Path(csv_path or DEFAULT_RUGBY_CSV)
-    if not csv_path.is_file():
+    try:
+        data_path = resolve_rugby_data_path(data_path)
+    except FileNotFoundError:
         return None
-    enc = rugby_adapter.to_encoding(csv_path, perm=perm)
+    enc = rugby_adapter.to_encoding(data_path, perm=perm)
     result = cluster.cluster_padic(enc, p=DEFAULT_P, k=4, linkage_method=DEFAULT_LINKAGE)
     feats = enc.digits.astype(float)
-    return validate.silhouette_comparison(result, feats)
+    return silhouette_comparison(result, feats)
 
 
 def summarise_q1(q1_df: pd.DataFrame, gate: float = ARI_GATE) -> dict[str, Any]:
@@ -498,6 +570,7 @@ def render_report(
     q8_sil: pd.DataFrame,
     q5_df: pd.DataFrame | None = None,
     q5_verdict_dict: dict[str, Any] | None = None,
+    q6_df: pd.DataFrame | None = None,
     q3_cf: dict[str, Any] | None = None,
     q2_df: pd.DataFrame | None = None,
     q7_df: pd.DataFrame | None = None,
@@ -601,6 +674,19 @@ def render_report(
                 ]
             )
 
+    if q6_df is not None and len(q6_df):
+        lines.extend(
+            [
+                "## Q6 — declared reading placement stability",
+                "",
+                q6_df.to_markdown(index=False),
+                "",
+                "Do not treat one (silhouette, rank-first share) point as a property of rugby "
+                "until linkage, endowment drop, and tier-ARI variants agree.",
+                "",
+            ]
+        )
+
     if q7_df is not None:
         lines.extend(["## Q7 — declared adapter parity (4-d)", "", q7_df.to_markdown(index=False), ""])
 
@@ -622,15 +708,19 @@ def run_all(
 
     q5_df = None
     q5v = None
+    q6_df = None
     q7_df = None
-    csv_path = Path(csv_path or DEFAULT_RUGBY_CSV)
-    if csv_path.is_file():
-        q5_df = run_q5(csv_path, curve=curve)
+    try:
+        data_path = resolve_rugby_data_path(csv_path)
+        q5_df = run_q5(data_path, curve=curve)
         q5v = q5_verdict(q5_df)
-        q7_df = run_q7_adapter_parity(csv_path)
+        q6_df = run_q6(data_path, curve=curve)
+        q7_df = run_q7_adapter_parity(data_path)
+    except FileNotFoundError:
+        data_path = None
 
     report = render_report(
-        q1_df, q3_df, q8_detail, q8_sil, q5_df, q5v, q3_cf, q2_df, q7_df
+        q1_df, q3_df, q8_detail, q8_sil, q5_df, q5v, q6_df, q3_cf, q2_df, q7_df
     )
 
     out: dict[str, Any] = {
@@ -638,6 +728,7 @@ def run_all(
         "q3_coarsest_first": q3_cf,
         "q8": q8_detail,
         "q5_verdict": q5v,
+        "q6": q6_df.to_dict(orient="records") if q6_df is not None else None,
     }
 
     if write:
@@ -649,6 +740,8 @@ def run_all(
         q8_sil.to_csv(RESULTS_DIR / "week25_q8.csv", index=False)
         if q5_df is not None:
             q5_df.to_csv(RESULTS_DIR / "week25_q5.csv", index=False)
+        if q6_df is not None:
+            q6_df.to_csv(RESULTS_DIR / "week25_q6.csv", index=False)
         with open(RESULTS_DIR / "week25_a1_summary.json", "w", encoding="utf-8") as f:
             json.dump(out, f, indent=2, default=str)
         print(f"Wrote report to {RESULTS_DIR / 'week25_a1_report.md'}")

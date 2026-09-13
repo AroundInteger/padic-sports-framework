@@ -1,0 +1,25 @@
+perm,description,performance_at_rank,silhouette,rank_ari,rank_first_share,nearest_curve_stage,nearest_curve_pi,curve_distance,near_e0
+"(0, 1, 2, 3)",rank←performance; doctrine←attack; organisation←breakdown; endowment←set_piece,True,0.6375,1.0,0.6916666666666667,E4,0.6,0.022244410779812568,True
+"(0, 1, 3, 2)",rank←performance; doctrine←attack; organisation←set_piece; endowment←breakdown,True,0.66875,1.0,0.6916666666666667,E4,0.6,0.048909459611740376,True
+"(0, 2, 1, 3)",rank←performance; doctrine←breakdown; organisation←attack; endowment←set_piece,True,0.6145833333333334,1.0,0.6916666666666667,E4,0.7,0.01825208107912142,True
+"(0, 2, 3, 1)",rank←performance; doctrine←breakdown; organisation←set_piece; endowment←attack,True,0.634375,1.0,0.6916666666666667,E4,0.6,0.020310183236098612,True
+"(0, 3, 1, 2)",rank←performance; doctrine←set_piece; organisation←attack; endowment←breakdown,True,0.7875000000000001,1.0,0.6916666666666667,E4,0.8,0.0936341877260177,False
+"(0, 3, 2, 1)",rank←performance; doctrine←set_piece; organisation←breakdown; endowment←attack,True,0.7760416666666667,1.0,0.6916666666666667,E4,0.8,0.0841689871792324,False
+"(1, 0, 2, 3)",rank←attack; doctrine←performance; organisation←breakdown; endowment←set_piece,False,0.5895833333333333,1.0,0.5,E4,0.7,0.20907203221424675,False
+"(1, 0, 3, 2)",rank←attack; doctrine←performance; organisation←set_piece; endowment←breakdown,False,0.6170138888888889,1.0,0.5,E4,0.6,0.2084127777475399,False
+"(1, 2, 0, 3)",rank←attack; doctrine←breakdown; organisation←performance; endowment←set_piece,False,0.6131944444444445,1.0,0.5,E4,0.7,0.2084212069023844,False
+"(1, 2, 3, 0)",rank←attack; doctrine←breakdown; organisation←set_piece; endowment←performance,False,0.6524305555555555,1.0,0.5,E4,0.6,0.21043443980228257,False
+"(1, 3, 0, 2)",rank←attack; doctrine←set_piece; organisation←performance; endowment←breakdown,False,0.7947916666666667,1.0,0.5,E4,0.8,0.25666675121751853,False
+"(1, 3, 2, 0)",rank←attack; doctrine←set_piece; organisation←breakdown; endowment←performance,False,0.8065972222222222,1.0,0.5,E4,0.8,0.2608803741896766,False
+"(2, 0, 1, 3)",rank←breakdown; doctrine←performance; organisation←attack; endowment←set_piece,False,0.51171875,1.0,0.6166666666666667,E4,0.7,0.1323198322315641,False
+"(2, 0, 3, 1)",rank←breakdown; doctrine←performance; organisation←set_piece; endowment←attack,False,0.529296875,1.0,0.6166666666666667,E4,0.7,0.12026127686651188,False
+"(2, 1, 0, 3)",rank←breakdown; doctrine←attack; organisation←performance; endowment←set_piece,False,0.57421875,1.0,0.6166666666666667,E4,0.7,0.0974000749944892,False
+"(2, 1, 3, 0)",rank←breakdown; doctrine←attack; organisation←set_piece; endowment←performance,False,0.623046875,1.0,0.6166666666666667,E4,0.6,0.09166709130730823,False
+"(2, 3, 0, 1)",rank←breakdown; doctrine←set_piece; organisation←performance; endowment←attack,False,0.693359375,1.0,0.6166666666666667,E4,0.6,0.1156976238785961,False
+"(2, 3, 1, 0)",rank←breakdown; doctrine←set_piece; organisation←attack; endowment←performance,False,0.724609375,1.0,0.6166666666666667,E4,0.8,0.1260551844722583,False
+"(3, 0, 1, 2)",rank←set_piece; doctrine←performance; organisation←attack; endowment←breakdown,False,0.6375,0.0,0.0,E4,0.6,0.7084865186750376,False
+"(3, 0, 2, 1)",rank←set_piece; doctrine←performance; organisation←breakdown; endowment←attack,False,0.6145833333333334,0.0,0.0,E4,0.7,0.7083724103866922,False
+"(3, 1, 0, 2)",rank←set_piece; doctrine←attack; organisation←performance; endowment←breakdown,False,0.5895833333333333,0.0,0.0,E4,0.7,0.7085509494648414,False
+"(3, 1, 2, 0)",rank←set_piece; doctrine←attack; organisation←breakdown; endowment←performance,False,0.6131944444444445,0.0,0.0,E4,0.7,0.7083591834796665,False
+"(3, 2, 0, 1)",rank←set_piece; doctrine←breakdown; organisation←performance; endowment←attack,False,0.51171875,0.0,0.0,E4,0.7,0.7147320276405155,False
+"(3, 2, 1, 0)",rank←set_piece; doctrine←breakdown; organisation←attack; endowment←performance,False,0.57421875,0.0,0.0,E4,0.7,0.7090980947247465,False

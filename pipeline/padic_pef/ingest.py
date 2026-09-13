@@ -22,9 +22,9 @@ import numpy as np
 import pandas as pd
 
 # Repo root is two levels above this file: pipeline/padic_pef/ingest.py
-DEFAULT_RUGBY_CSV = (
-    Path(__file__).resolve().parents[2] / "data" / "rugby" / "rugby_analysis_ready.csv"
-)
+DATA_RUGBY_DIR = Path(__file__).resolve().parents[2] / "data" / "rugby"
+DEFAULT_RUGBY_CSV = DATA_RUGBY_DIR / "rugby_analysis_ready.csv"
+DEFAULT_RUGBY_MAT = DATA_RUGBY_DIR / "rugby_analysis_ready.mat"
 
 REQUIRED_RUGBY_COLUMNS = (
     "season",
@@ -43,19 +43,98 @@ REQUIRED_RUGBY_COLUMNS = (
 )
 
 
-def load_rugby_matches(csv_path: str | Path | None = None) -> pd.DataFrame:
-    """Load the URC team-match panel.
+def _read_matlab_cell_strings(h5_file, dataset) -> list[str]:
+    """Decode a MATLAB cell array of strings from an HDF5 v7.3 MAT file."""
+    refs = dataset[0]
+    out: list[str] = []
+    for ref in refs:
+        chars = h5_file[ref][()]
+        if chars.dtype == np.uint16:
+            out.append("".join(chr(int(c)) for c in chars.flatten() if c != 0))
+        elif chars.dtype.kind in ("U", "S"):
+            out.append("".join(chars.flatten()))
+        else:
+            out.append(str(chars))
+    return out
+
+
+def load_rugby_from_mat(mat_path: str | Path | None = None) -> pd.DataFrame:
+    """Load the URC panel from ``rugby_analysis_ready.mat`` (v7.3 HDF5).
+
+    Column names match ``REQUIRED_RUGBY_COLUMNS`` for ``legacy_d2.encode_matlab_7d``.
+    """
+    try:
+        import h5py
+    except ImportError as exc:
+        raise ImportError("load_rugby_from_mat requires h5py: pip install h5py") from exc
+
+    path = Path(mat_path) if mat_path is not None else DEFAULT_RUGBY_MAT
+    if not path.is_file():
+        raise FileNotFoundError(f"Rugby MAT not found at {path}")
+
+    with h5py.File(path, "r") as f:
+        cd = f["clean_data"]
+        teams = _read_matlab_cell_strings(f, cd["team"])
+        seasons = _read_matlab_cell_strings(f, cd["season"])
+        n = len(teams)
+        abs_grp = cd["absolute"]
+        rel_grp = cd["relative"]
+
+        def col(group, name: str) -> np.ndarray:
+            return np.asarray(group[name][0], dtype=float)
+
+        df = pd.DataFrame(
+            {
+                "team": teams,
+                "season": seasons,
+                "final_points_relative": np.asarray(cd["final_points_relative"][0], dtype=float),
+                "abs_carries": col(abs_grp, "carries"),
+                "abs_passes": col(abs_grp, "passes"),
+                "rel_turnovers_won": col(rel_grp, "turnovers_won"),
+                "rel_turnovers_conceded": col(rel_grp, "turnovers_conceded"),
+                "abs_kicks_from_hand": col(abs_grp, "kicks_from_hand"),
+                "rel_clean_breaks": col(rel_grp, "clean_breaks"),
+                "rel_penalties_conceded": col(rel_grp, "penalties_conceded"),
+                "abs_scrums_won": col(abs_grp, "scrums_won"),
+                "abs_lineout_throws_won": col(abs_grp, "lineout_throws_won"),
+                "outcome_binary": np.asarray(cd["outcome_binary"][0], dtype=int),
+            }
+        )
+
+    if len(df) != n:
+        raise ValueError(f"MAT row count mismatch: {len(df)} vs {n}")
+    missing = [c for c in REQUIRED_RUGBY_COLUMNS if c not in df.columns]
+    if missing:
+        raise KeyError(f"rugby MAT missing columns: {missing}")
+    return df
+
+
+def resolve_rugby_data_path(explicit: str | Path | None = None) -> Path:
+    """Return CSV if present, else MAT fallback."""
+    if explicit is not None:
+        path = Path(explicit)
+        if path.is_file():
+            return path
+        raise FileNotFoundError(f"Rugby data not found at {path}")
+    if DEFAULT_RUGBY_CSV.is_file():
+        return DEFAULT_RUGBY_CSV
+    if DEFAULT_RUGBY_MAT.is_file():
+        return DEFAULT_RUGBY_MAT
+    raise FileNotFoundError(
+        f"No rugby data at {DEFAULT_RUGBY_CSV} or {DEFAULT_RUGBY_MAT}"
+    )
+
+
+def load_rugby_matches(data_path: str | Path | None = None) -> pd.DataFrame:
+    """Load the URC team-match panel from CSV or MAT.
 
     Returns 1 128 rows (564 fixtures × 2 team perspectives), 16 teams,
     seasons 21/22–24/25. This is the match-level table; clustering is on
     the 16 team-level encodings from ``legacy_d2.encode_matlab_7d``.
     """
-    path = Path(csv_path) if csv_path is not None else DEFAULT_RUGBY_CSV
-    if not path.is_file():
-        raise FileNotFoundError(
-            f"Rugby CSV not found at {path}. Expected data/rugby/rugby_analysis_ready.csv "
-            "at the repository root."
-        )
+    path = resolve_rugby_data_path(data_path)
+    if path.suffix.lower() == ".mat":
+        return load_rugby_from_mat(path)
     df = pd.read_csv(path)
     missing = [c for c in REQUIRED_RUGBY_COLUMNS if c not in df.columns]
     if missing:
