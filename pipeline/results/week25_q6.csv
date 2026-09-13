@@ -1,0 +1,6 @@
+perm,linkage,drop_endowment,metric,silhouette,rank_first_share,nearest_curve_stage,nearest_curve_pi,curve_distance,score
+"(0, 1, 2, 3)",single,False,curve,0.6375,0.6916666666666667,E4,0.6,0.022244410779812568,0.6375
+"(0, 1, 2, 3)",complete,False,curve,0.6375,0.6916666666666667,E4,0.6,0.022244410779812568,0.6375
+"(0, 1, 2, 3)",average,False,curve,0.6375,0.6916666666666667,E4,0.6,0.022244410779812568,0.6375
+"(0, 1, 2, 3)",complete,True,curve,0.6375,0.6916666666666667,E4,0.6,0.022244410779812568,0.6375
+"(0, 1, 2, 3)",complete,False,performance_tier_ari,0.6375,0.6916666666666667,performance_tier,,,1.0

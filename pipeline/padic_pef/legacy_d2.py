@@ -25,7 +25,7 @@ from scipy.cluster.hierarchy import fcluster, linkage
 from scipy.spatial.distance import squareform
 from sklearn.metrics import silhouette_score
 
-from .ingest import DEFAULT_RUGBY_CSV, load_rugby_matches
+from .ingest import load_rugby_matches, resolve_rugby_data_path
 
 DIMENSION_NAMES = (
     "Performance_Tier",
@@ -156,7 +156,7 @@ def encode_matlab_7d(
       - ``matlab_unique``: alphabetical, matching MATLAB ``unique(team)``
       - ``first_appearance``: order of first row in the CSV
     """
-    path = Path(csv_path) if csv_path is not None else DEFAULT_RUGBY_CSV
+    path = resolve_rugby_data_path(csv_path)
     matches = load_rugby_matches(path)
     if team_order == "matlab_unique":
         teams = sorted(matches["team"].unique().tolist())
